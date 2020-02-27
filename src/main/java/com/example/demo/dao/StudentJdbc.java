@@ -21,8 +21,37 @@ public class StudentJdbc {
         return jdbcTemplate.queryForObject("SELECT * FROM student WHERE id = ?", this::mapStudent, id);
     }
 
-    public List<Student> getAll(){
+    public List<Student> getStudyGroupId(int study_group_id) {
+        return jdbcTemplate.query("SELECT * FROM student WHERE study_group_id = ?",new Object[]{study_group_id}, mapStudentList);
+    }
+
+
+    public List<Student> getAll() {
         return jdbcTemplate.query("SELECT * FROM student", mapStudentList);
+    }
+
+    public int create(Student student) {
+        return jdbcTemplate.update("INSERT INTO student (id, surname, name, second_name,study_group_id) VALUES (?, ?, ?, ?, ?)",
+                new Object[]{
+                        student.getId(),
+                        student.getSurname(),
+                        student.getName(),
+                        student.getSecond_name(),
+                        student.getStudy_group_id()});
+    }
+
+    public int update(Student student) {
+        return jdbcTemplate.update("UPDATE student SET id = ?, surname = '?', name = '?', second_name = '?' ,study_group_id = ?)",
+                new Object[]{
+                        student.getId(),
+                        student.getSurname(),
+                        student.getName(),
+                        student.getSecond_name(),
+                        student.getStudy_group_id()});
+    }
+
+    public int delete(int id){
+        return jdbcTemplate.update("DELETE student WHERE id = ?",new Object[]{id});
     }
 
     private Student mapStudent(ResultSet resultSet, int i) throws SQLException {
@@ -37,6 +66,6 @@ public class StudentJdbc {
     }
 
     private RowMapper<Student> mapStudentList = (ResultSet resultSet, int rowNum) -> {
-        return mapStudent(resultSet,rowNum);
+        return mapStudent(resultSet, rowNum);
     };
 }
