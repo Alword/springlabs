@@ -1,0 +1,17 @@
+﻿@using StudyDepartment.Web.Model;
+<td style="background-color: @Color;">
+    @if (jurnalRecord != null)
+    {
+        @MarkValue
+        <span style="font-size: 12px; position: absolute; top: 0px; right: 0px; background-color: rgb(255, 255, 255);">@AttestationType</span>
+        <span style="font-size: 10px; position: absolute; bottom: 0px; right: 0px;">Пересдач: @RetakeCount</span>
+    }
+</td>
+
+@code {
+    [Parameter] public JurnalRecord jurnalRecord { get; set; }
+    public string MarkValue { get => jurnalRecord.Mark_Value; }
+    public int RetakeCount { get => jurnalRecord.Count; }
+    public string AttestationType { get => jurnalRecord.Exam_Type; }
+    public string Color { get => "cccccc"; }
+}

@@ -1,33 +1,37 @@
 ﻿@page "/Jurnal"
 @inject HttpClient Http
-
+@using StudyDepartment.Web.Model;
 <h1>Журнал группы</h1>
 
 <p>...</p>
 
-@if (jurnals == null)
+@if (jurnalRecords == null)
 {
     <p><em>Загрузка...</em></p>
 }
 else
 {
-    <table class="table">
+    <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Id</th>
+                <th>#</th>
                 <th>ФИО студента</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
+                @foreach (var subject in subjects)
+                {
+                    <th>@subject</th>
+                }
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in jurnals)
+            @foreach (var studentName in studentMarks.Keys)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <td>@NextId()</td>
+                    <td>@studentName</td>
+                    @foreach (var subject in subjects)
+                    {
+                        <MarkComponent jurnalRecord="@GetMark(studentName,subject)"></MarkComponent>
+                    }
                 </tr>
             }
         </tbody>
@@ -35,38 +39,32 @@ else
 }
 
 @code {
-    private Jurnal[] jurnals;
+    private int i = 1;
+    private JurnalRecord[] jurnalRecords;
+    private Dictionary<string, Dictionary<string, JurnalRecord>> studentMarks;
+    private List<string> subjects;
 
     protected override async Task OnInitializedAsync()
     {
-        jurnals = await Http.GetJsonAsync<Jurnal[]>("sample-data/weather.json");
+        jurnalRecords = await Http.GetJsonAsync<JurnalRecord[]>("http://localhost:8080/journal/");
+        subjects = jurnalRecords.Select(d => d.Subject_Short_Name).Distinct().ToList();
+        studentMarks = jurnalRecords.GroupBy(d => d.Student_Full_Name)
+            .ToDictionary(d => d.Key, w => w.GroupBy(w => w.Subject_Short_Name).ToDictionary(wk => wk.Key, dd => dd.FirstOrDefault()));
     }
 
-    public class Jurnal
+    public int NextId() => i++;
+
+    public JurnalRecord GetMark(string student, string subject)
     {
-        public int Id { get; set; }
+        // JurnalRecord record = studentMarks[studentName][subject]?.Mark_Value;
 
-        public int Student_Id { get; set; }
-
-        public int Study_Plan_Id { get; set; }
-
-        public bool In_Time { get; set; }
-
-        public int Count { get; set; }
-
-        public int Mark_Id { get; set; }
-
-        public string Student_Full_Name { get; set; }
-
-        public string Subject_Name { get; set; }
-
-        public string Subject_Short_Name { get; set; }
-
-        public string Exam_Type { get; set; }
-
-        public string Mark_Name { get; set; }
-
-        public int Mark_Value { get; set; }
-
+        if (studentMarks.ContainsKey(student) && studentMarks[student].ContainsKey(subject))
+        {
+            return studentMarks[student][subject];
+        }
+        else
+        {
+            return null;
+        }
     }
 }
