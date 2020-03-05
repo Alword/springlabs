@@ -1,0 +1,72 @@
+﻿@page "/Jurnal"
+@inject HttpClient Http
+
+<h1>Журнал группы</h1>
+
+<p>...</p>
+
+@if (jurnals == null)
+{
+    <p><em>Загрузка...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>ФИО студента</th>
+                <th>Temp. (F)</th>
+                <th>Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in jurnals)
+            {
+                <tr>
+                    <td>@forecast.Date.ToShortDateString()</td>
+                    <td>@forecast.TemperatureC</td>
+                    <td>@forecast.TemperatureF</td>
+                    <td>@forecast.Summary</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Jurnal[] jurnals;
+
+    protected override async Task OnInitializedAsync()
+    {
+        jurnals = await Http.GetJsonAsync<Jurnal[]>("sample-data/weather.json");
+    }
+
+    public class Jurnal
+    {
+        public int Id { get; set; }
+
+        public int Student_Id { get; set; }
+
+        public int Study_Plan_Id { get; set; }
+
+        public bool In_Time { get; set; }
+
+        public int Count { get; set; }
+
+        public int Mark_Id { get; set; }
+
+        public string Student_Full_Name { get; set; }
+
+        public string Subject_Name { get; set; }
+
+        public string Subject_Short_Name { get; set; }
+
+        public string Exam_Type { get; set; }
+
+        public string Mark_Name { get; set; }
+
+        public int Mark_Value { get; set; }
+
+    }
+}
