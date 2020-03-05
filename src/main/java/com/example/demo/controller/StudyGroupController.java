@@ -2,40 +2,45 @@ package com.example.demo.controller;
 
 import com.example.demo.dao.StudyGroupJdbc;
 import com.example.demo.model.StudyGroup;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/study_groups")
 public class StudyGroupController {
+
     private final StudyGroupJdbc studyGroupJdbc;
 
     public StudyGroupController(StudyGroupJdbc studyGroupJdbc) {
         this.studyGroupJdbc = studyGroupJdbc;
     }
 
-    @GetMapping("/study-group/{id}")
-    public StudyGroup studyGroupById(@PathVariable(value = "id") int id) {
-        return studyGroupJdbc.get(id);
-    }
-
-    @GetMapping("/study-group")
-    public List<StudyGroup> studyGroupAll() {
+    @GetMapping(path = "")
+    public List<StudyGroup> getStudyGroups() {
         return studyGroupJdbc.getAll();
     }
 
-    @PostMapping("/study-group")
-    public int createStudyGroup(@RequestBody StudyGroup studyGroup) {
+    @GetMapping(path = "/{id}")
+    public StudyGroup getStudyGroup(@PathVariable int id) {
+        return studyGroupJdbc.get(id);
+    }
+
+    @PostMapping(path = "", consumes = "application/json", produces = "application/json")
+    public long addStudyGroup(@RequestBody StudyGroup studyGroup) {
         return studyGroupJdbc.create(studyGroup);
     }
 
-    @PutMapping("/study-group")
-    public int updateStudyGroup(@RequestBody StudyGroup studyGroup) {
-        return studyGroupJdbc.update(studyGroup);
+    @PutMapping("/{id}")
+    public int updateStudyGroup(@PathVariable int id, @RequestBody StudyGroup studyGroup) {
+        return studyGroupJdbc.update(id, studyGroup);
     }
 
-    @DeleteMapping("/study-group/{id}")
-    public int deleteStudyGroup(@PathVariable(value = "id") int id) {
+    @DeleteMapping("/{id}")
+    public int deleteStudyGroup(@PathVariable int id) {
         return studyGroupJdbc.delete(id);
     }
 }

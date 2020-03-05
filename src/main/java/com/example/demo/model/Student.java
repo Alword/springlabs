@@ -1,12 +1,16 @@
 package com.example.demo.model;
 
 public class Student {
+
     private int id;
     private String surname;
     private String name;
     private String second_name;
     private int study_group_id;
+    private String study_group;
 
+    public Student() {
+    }
 
     public Student(int id, String surname, String name, String second_name, int study_group_id) {
         this.id = id;
@@ -14,6 +18,11 @@ public class Student {
         this.name = name;
         this.second_name = second_name;
         this.study_group_id = study_group_id;
+    }
+
+    public Student(int id, String surname, String name, String second_name, int study_group_id, String study_group) {
+        this(id, surname, name, second_name, study_group_id);
+        this.study_group = study_group;
     }
 
     public int getId() {
@@ -54,5 +63,9 @@ public class Student {
 
     public void setStudy_group_id(int study_group_id) {
         this.study_group_id = study_group_id;
+    }
+
+    public String getStudy_group() {
+        return study_group;
     }
 }

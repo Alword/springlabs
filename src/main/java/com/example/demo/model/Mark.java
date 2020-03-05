@@ -1,37 +1,38 @@
 package com.example.demo.model;
 
 public class Mark {
-    public int id;
+
+    private int id;
     private String name;
     private String value;
 
-    public  Mark(int id, String name, String value){
+    public Mark(int id, String name, String value) {
         this.id = id;
         this.name = name;
         this.value = value;
     }
 
-    public int getId(){
+    public int getId() {
         return id;
     }
 
-    public void setId(int id){
+    public void setId(int id) {
         this.id = id;
     }
 
-    public  String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 
-    public String getValue(){
+    public String getValue() {
         return value;
     }
-    public void setValue(String value){
+
+    public void setValue(String value) {
         this.value = value;
     }
 }
