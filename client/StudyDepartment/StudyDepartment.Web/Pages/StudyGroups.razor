@@ -1,7 +1,6 @@
 ﻿@page "/StudyGroups"
-
 @inject HttpClient Http
-
+@using Model
 <h1>Список групп</h1>
 
 <p>Список групп студентов</p>
@@ -37,11 +36,5 @@ else
     protected override async Task OnInitializedAsync()
     {
         groups = await Http.GetJsonAsync<StudyGroup[]>("http://localhost:8080/study_groups");
-    }
-
-    public class StudyGroup
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
     }
 }
