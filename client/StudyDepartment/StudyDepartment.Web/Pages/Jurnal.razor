@@ -1,0 +1,105 @@
+﻿@page "/Jurnal"
+@inject HttpClient Http
+@using Model;
+<h1>Журнал группы</h1>
+
+<p>...</p>
+
+@if (jurnalRecords == null || groups == null)
+{
+    <p><em>Загрузка...</em></p>
+}
+else
+{
+    <select @onchange="UpdateJurnalpJurnal" class="form-control">
+        <option value="-1">*</option>
+        @foreach (var group in groups)
+        {
+            <option value="@group.Id">@group.Name</option>
+        }
+    </select>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>ФИО студента</th>
+                @foreach (var subject in subjects)
+                {
+                    <th>@subject</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var studentName in studentMarks.Keys)
+            {
+                <tr>
+                    <td>@NextId()</td>
+                    <td>@studentName</td>
+                    @foreach (var subject in subjects)
+                    {
+                        <MarkComponent jurnalRecord="@GetMark(studentName, subject)"></MarkComponent>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private int i;
+    private string GroupValue = "-1";
+    private JurnalRecord[] jurnalRecords;
+    private string[] subjects;
+    private StudyGroup[] groups;
+    private Dictionary<string, Dictionary<string, JurnalRecord>> studentMarks;
+    protected override async Task OnInitializedAsync()
+    {
+        i = 1;
+        groups = await Http.GetJsonAsync<StudyGroup[]>("http://localhost:8080/study_groups/");
+        if (GroupValue == "-1")
+        {
+            jurnalRecords = await Http.GetJsonAsync<JurnalRecord[]>("http://localhost:8080/journal/");
+        }
+        else
+        {
+            jurnalRecords = await Http.GetJsonAsync<JurnalRecord[]>($"http://localhost:8080/journal/study_group/{GroupValue}");
+        }
+        subjects = jurnalRecords.Select(d => d.Subject_Short_Name).Distinct().ToArray();
+        studentMarks = jurnalRecords.GroupBy(d => d.Student_Full_Name)
+            .ToDictionary(d => d.Key, w => w.GroupBy(w => w.Subject_Short_Name).ToDictionary(wk => wk.Key, dd => dd.FirstOrDefault()));
+
+    }
+
+    public int NextId() => i++;
+
+    public JurnalRecord GetMark(string student, string subject)
+    {
+        if (studentMarks.ContainsKey(student) && studentMarks[student].ContainsKey(subject))
+        {
+            return studentMarks[student][subject];
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    private async Task UpdateJurnalpJurnal(ChangeEventArgs e)
+    {
+        GroupValue = e.Value.ToString();
+        i = 1;
+        groups = await Http.GetJsonAsync<StudyGroup[]>("http://localhost:8080/study_groups/");
+        if (GroupValue == "-1")
+        {
+            jurnalRecords = await Http.GetJsonAsync<JurnalRecord[]>("http://localhost:8080/journal/");
+        }
+        else
+        {
+            jurnalRecords = await Http.GetJsonAsync<JurnalRecord[]>($"http://localhost:8080/journal/study_group/{GroupValue}");
+        }
+        subjects = jurnalRecords.Select(d => d.Subject_Short_Name).Distinct().ToArray();
+        studentMarks = jurnalRecords.GroupBy(d => d.Student_Full_Name)
+            .ToDictionary(d => d.Key, w => w.GroupBy(w => w.Subject_Short_Name).ToDictionary(wk => wk.Key, dd => dd.FirstOrDefault()));
+    }
+}

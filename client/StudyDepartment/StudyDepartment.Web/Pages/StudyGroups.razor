@@ -1,0 +1,40 @@
+﻿@page "/StudyGroups"
+@inject HttpClient Http
+@using Model
+<h1>Список групп</h1>
+
+<p>Список групп студентов</p>
+
+@if (groups == null)
+{
+    <p><em>Загрузка...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Название</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var group in groups)
+            {
+                <tr>
+                    <td>@group.Id</td>
+                    <td>@group.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private StudyGroup[] groups;
+
+    protected override async Task OnInitializedAsync()
+    {
+        groups = await Http.GetJsonAsync<StudyGroup[]>("http://localhost:8080/study_groups");
+    }
+}
