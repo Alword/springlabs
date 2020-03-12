@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using StudyDepartment.Server.Context;
 
 namespace StudyDepartment.Server
 {
@@ -25,6 +26,7 @@ namespace StudyDepartment.Server
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<StudyDepartmentContext>();
             services.AddControllers();
         }
 
@@ -35,7 +37,6 @@ namespace StudyDepartment.Server
             {
                 app.UseDeveloperExceptionPage();
             }
-
             app.UseHttpsRedirection();
 
             app.UseRouting();
