@@ -9,14 +9,13 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using StudyDepartment.Server.Context;
 
-namespace StudyDepartment.Server
+namespace StudyDepartment.MVC
 {
     public class Program
     {
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
-
             using (var dataContext = new StudyDepartmentContext())
             {
                 dataContext.Database.Migrate();
@@ -29,6 +28,5 @@ namespace StudyDepartment.Server
                 {
                     webBuilder.UseStartup<Startup>();
                 });
-
     }
 }
