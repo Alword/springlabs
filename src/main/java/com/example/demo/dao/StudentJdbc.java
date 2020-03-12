@@ -40,7 +40,7 @@ public class StudentJdbc {
     public List<Student> getAll() {
         return jdbcTemplate.query(
                 "SELECT student.id, surname, student.name, second_name, study_group_id, study_group.name " +
-                "AS study_group " +
+                        "AS study_group " +
                         "FROM student INNER JOIN study_group ON student.study_group_id = study_group.id",
                 this::mapStudent
         );
@@ -48,11 +48,8 @@ public class StudentJdbc {
 
     public List<Student> getAllLocal() {
         return jdbcTemplate.query(
-                "SELECT student_local.id, surname, student_local.name, second_name, study_group_id, " +
-                        "study_group.name " +
-                        "AS study_group " +
-                        "FROM student_local INNER JOIN study_group ON student_local.study_group_id = study_group.id",
-                this::mapStudent
+                "SELECT * FROM student_local",
+                this::mapLocalStudent
         );
     }
 
@@ -86,6 +83,16 @@ public class StudentJdbc {
                 rs.getString("second_name"),
                 rs.getInt("study_group_id"),
                 rs.getString("study_group")
+        );
+    }
+
+    private Student mapLocalStudent(ResultSet rs, int i) throws SQLException {
+        return new Student(
+                rs.getInt("id"),
+                rs.getString("surname"),
+                rs.getString("name"),
+                rs.getString("second_name"),
+                rs.getInt("study_group_id")
         );
     }
 

@@ -10,12 +10,15 @@ sourceCompatibility = '11'
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'net.progruzovik.bus:bus-datasource-spring-jdbc:1.0-DEAN'
+    implementation 'net.progruzovik.bus:bus-messaging-spring-rest:1.0-DEAN'
     runtimeOnly 'com.h2database:h2'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
